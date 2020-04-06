@@ -14,6 +14,11 @@ public class Lot {
     @ColumnName("car_number")
     private String carNumber;
 
+    public Lot(String parkingLotTag, int parkingLotNumber) {
+        this.parkingLotTag = parkingLotTag;
+        this.parkingLotNumber = parkingLotNumber;
+    }
+
     public Lot() {
     }
 
