@@ -1,5 +1,6 @@
 import dao.LotRepository;
 import entities.Lot;
+import exception.ParkingLotFullException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,8 +39,10 @@ public class Application {
                 System.out.println("请输入车牌号\n格式为\"车牌号\" 如: \"A12098\"：");
                 String carInfo = scanner.next();
                 String ticket = park(carInfo);
-                String[] ticketDetails = ticket.split(",");
-                System.out.format("已将您的车牌号为%s的车辆停到%s停车场%s号车位，停车券为：%s，请您妥善保存。\n", ticketDetails[2], ticketDetails[0], ticketDetails[1], ticket);
+                if (ticket != null) {
+                    String[] ticketDetails = ticket.split(",");
+                    System.out.format("已将您的车牌号为%s的车辆停到%s停车场%s号车位，停车券为：\"%s\"，请您妥善保存。\n", ticketDetails[2], ticketDetails[0], ticketDetails[1], ticket);
+                }
                 break;
             }
             case "3": {
@@ -73,7 +76,17 @@ public class Application {
     }
 
     public static String park(String carNumber) {
-        return "";
+        LotRepository lotRepository = new LotRepository();
+        try {
+            List<Lot> lots = lotRepository.queryAvailabelLots();
+            Lot lot = lots.get(0);
+            lot.setCarNumber(carNumber);
+            lotRepository.update(lot);
+            return String.format("%s,%d,%s", lot.getParkingLotTag(), lot.getParkingLotNumber(), lot.getCarNumber());
+        } catch (ParkingLotFullException e) {
+            System.out.println("非常抱歉，由于车位已满，暂时无法为您停车！");
+            return null;
+        }
     }
 
     public static String fetch(String ticket) {

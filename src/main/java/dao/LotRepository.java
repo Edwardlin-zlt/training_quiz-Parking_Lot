@@ -3,6 +3,7 @@ package dao;
 import Utils.JDBCUtils;
 import Utils.SqlUtils;
 import entities.Lot;
+import exception.ParkingLotFullException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -72,6 +73,24 @@ public class LotRepository {
             Connection conn = JDBCUtils.getConnection();
             String sql = "SELECT id, parking_lot_tag, parking_log_number, car_number FROM lot Where id=?";
             return SqlUtils.executeQuerySingle(conn, sql, Lot.class, id);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public List<Lot> queryAvailabelLots() {
+        try {
+            Connection conn = JDBCUtils.getConnection();
+            String sql = "SELECT id, parking_lot_tag, parking_log_number, car_number " +
+                "FROM lot " +
+                "WHERE car_number IS NULL " +
+                "ORDER BY parking_lot_tag, parking_log_number";
+            List<Lot> lots = SqlUtils.executeQuery(conn, sql, Lot.class);
+            if (lots.size() == 0) {
+                throw new ParkingLotFullException();
+            }
+            return lots;
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
