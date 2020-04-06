@@ -88,7 +88,7 @@ public class Application {
             return String.format("%s,%d,%s", lot.getParkingLotTag(), lot.getParkingLotNumber(), lot.getCarNumber());
         } catch (ParkingLotFullException e) {
             System.out.println("非常抱歉，由于车位已满，暂时无法为您停车！");
-            return null;
+            throw e;
         }
     }
 
@@ -102,7 +102,7 @@ public class Application {
             return carNumber;
         } catch (InvalidTicketException e) {
             System.out.println("很抱歉，无法通过您提供的停车券为您找到相应的车辆，请您再次核对停车券是否有效！");
-            return null;
+            throw e;
         }
     }
 
