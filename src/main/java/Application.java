@@ -1,5 +1,6 @@
 import dao.LotRepository;
 import entities.Lot;
+import exception.InvalidTicketException;
 import exception.ParkingLotFullException;
 
 import java.util.ArrayList;
@@ -46,10 +47,12 @@ public class Application {
                 break;
             }
             case "3": {
-                System.out.println("请输入停车券信息\n格式为\"停车场编号1,车位编号,车牌号\" 如 \"A,1,8\"：");
+                System.out.println("请输入停车券信息\n格式为\"停车场编号,车位编号,车牌号\" 如 \"A,1,8\"：");
                 String ticket = scanner.next();
                 String car = fetch(ticket);
-                System.out.format("已为您取到车牌号为%s的车辆，很高兴为您服务，祝您生活愉快!\n", car);
+                if (car != null) {
+                    System.out.format("已为您取到车牌号为%s的车辆，很高兴为您服务，祝您生活愉快!\n", car);
+                }
                 break;
             }
         }
@@ -78,7 +81,7 @@ public class Application {
     public static String park(String carNumber) {
         LotRepository lotRepository = new LotRepository();
         try {
-            List<Lot> lots = lotRepository.queryAvailabelLots();
+            List<Lot> lots = lotRepository.queryAvailableLots();
             Lot lot = lots.get(0);
             lot.setCarNumber(carNumber);
             lotRepository.update(lot);
@@ -90,7 +93,17 @@ public class Application {
     }
 
     public static String fetch(String ticket) {
-        return "";
+        LotRepository lotRepository = new LotRepository();
+        try {
+            Lot lot = lotRepository.queryByTicket(ticket);
+            String carNumber =lot.getCarNumber();
+            lot.setCarNumber(null);
+            lotRepository.update(lot);
+            return carNumber;
+        } catch (InvalidTicketException e) {
+            System.out.println("很抱歉，无法通过您提供的停车券为您找到相应的车辆，请您再次核对停车券是否有效！");
+            return null;
+        }
     }
 
 }

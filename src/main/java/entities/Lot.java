@@ -14,12 +14,18 @@ public class Lot {
     @ColumnName("car_number")
     private String carNumber;
 
+    public Lot() {
+    }
+
     public Lot(String parkingLotTag, int parkingLotNumber) {
         this.parkingLotTag = parkingLotTag;
         this.parkingLotNumber = parkingLotNumber;
     }
 
-    public Lot() {
+    public Lot(String parkingLotTag, int parkingLotNumber, String carNumber) {
+        this.parkingLotTag = parkingLotTag;
+        this.parkingLotNumber = parkingLotNumber;
+        this.carNumber = carNumber;
     }
 
     public Lot(int id, String parkingLotTag, int parkingLotNumber, String carNumber) {

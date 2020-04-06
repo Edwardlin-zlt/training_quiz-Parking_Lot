@@ -2,6 +2,7 @@ package Utils;
 
 import anno.ColumnName;
 
+import javax.swing.text.html.Option;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -30,7 +31,12 @@ public class SqlUtils {
     }
 
     public static <T> T executeQuerySingle(Connection conn, String sql, Class<T> clazz, Object... args) {
-        return executeQuery(conn, sql, clazz, args).get(0);
+        List<T> ts = executeQuery(conn, sql, clazz, args);
+        if (ts.size() > 0) {
+            return ts.get(0);
+        } else {
+            return null;
+        }
     }
 
     public static <T> List<T> executeQuery(Connection conn, String sql, Class<T> clazz, Object... args) {

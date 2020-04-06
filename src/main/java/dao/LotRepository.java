@@ -3,6 +3,7 @@ package dao;
 import Utils.JDBCUtils;
 import Utils.SqlUtils;
 import entities.Lot;
+import exception.InvalidTicketException;
 import exception.ParkingLotFullException;
 
 import java.sql.Connection;
@@ -27,6 +28,7 @@ public class LotRepository {
     public void update(List<Lot> lots) {
         lots.forEach(this::save);
     }
+
     public void update(Lot lot) {
         try {
             Connection conn = JDBCUtils.getConnection();
@@ -47,7 +49,7 @@ public class LotRepository {
         }
     }
 
-    public void DeleteById(int id){
+    public void DeleteById(int id) {
         try {
             Connection conn = JDBCUtils.getConnection();
             String sql = "DELETE FROM lot WHERE id = ?";
@@ -79,7 +81,7 @@ public class LotRepository {
         }
     }
 
-    public List<Lot> queryAvailabelLots() {
+    public List<Lot> queryAvailableLots() {
         try {
             Connection conn = JDBCUtils.getConnection();
             String sql = "SELECT id, parking_lot_tag, parking_log_number, car_number " +
@@ -97,4 +99,24 @@ public class LotRepository {
         }
     }
 
+    public Lot queryByTicket(String ticket) {
+        String[] ticketDetails = ticket.split(",");
+        try {
+            Connection conn = JDBCUtils.getConnection();
+            String sql = "SELECT id, parking_lot_tag, parking_log_number, car_number " +
+                "FROM lot " +
+                "WHERE parking_lot_tag = ? " +
+                "  AND parking_log_number = ? " +
+                "  AND car_number = ?";
+            Lot lot = SqlUtils.executeQuerySingle(conn, sql, Lot.class,
+                ticketDetails[0], ticketDetails[1], ticketDetails[2]);
+            if (lot == null) {
+                throw new InvalidTicketException();
+            }
+            return lot;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
