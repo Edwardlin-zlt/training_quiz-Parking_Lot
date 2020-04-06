@@ -29,6 +29,10 @@ public class SqlUtils {
         }
     }
 
+    public static <T> T executeQuerySingle(Connection conn, String sql, Class<T> clazz, Object... args) {
+        return executeQuery(conn, sql, clazz, args).get(0);
+    }
+
     public static <T> List<T> executeQuery(Connection conn, String sql, Class<T> clazz, Object... args) {
         PreparedStatement ps = null;
         ResultSet rs = null;

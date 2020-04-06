@@ -49,7 +49,7 @@ public class Application {
       // 1. parse initInfo to parking_lot_tag and parking_lot_number
       // parsedInitInfo
 
-      // 2. create Lot entities and List<Lot>
+      // 2. create entities.Lot entities and List<entities.Lot>
 
   }
 
