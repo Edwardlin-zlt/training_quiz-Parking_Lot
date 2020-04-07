@@ -1,16 +1,11 @@
-import dao.LotRepository;
-import entities.Lot;
 import exception.InvalidInitInfoException;
 import exception.InvalidTicketException;
 import exception.ParkingLotFullException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
-import java.util.Set;
 
 public class Application {
+    private static Manager manager = new Manager();
 
     public static void main(String[] args) {
         operateParking();
@@ -43,7 +38,8 @@ public class Application {
                 String ticket = park(carInfo);
                 if (ticket != null) {
                     String[] ticketDetails = ticket.split(",");
-                    System.out.format("已将您的车牌号为%s的车辆停到%s停车场%s号车位，停车券为：\"%s\"，请您妥善保存。\n", ticketDetails[2], ticketDetails[0], ticketDetails[1], ticket);
+                    System.out.format("已将您的车牌号为%s的车辆停到%s停车场%s号车位，停车券为：\"%s\"，请您妥善保存。\n",
+                        ticketDetails[2], ticketDetails[0], ticketDetails[1], ticket);
                 }
                 break;
             }
@@ -61,36 +57,15 @@ public class Application {
 
     public static void init(String initInfo) {
         try {
-            Map<String, Integer> tagNumberMap = ParsedInitInfoUtil.parseRawInfo(initInfo);
-            LotRepository lotRepository = new LotRepository();
-            lotRepository.DeleteAll();
-            createLots(tagNumberMap);
+            manager.constructParkingLot(initInfo);
         } catch (InvalidInitInfoException e) {
             System.out.println("初始化信息格式错误，请重新输入");
         }
     }
 
-    private static void createLots(Map<String, Integer> tagNumberMap) {
-        List<Lot> lots = new ArrayList<>();
-        Set<String> tags = tagNumberMap.keySet();
-        for (String tag : tags) {
-            Integer count = tagNumberMap.get(tag);
-            for (int i = 0; i < count; i++) {
-                lots.add(new Lot(tag, i + 1));
-            }
-        }
-        LotRepository lotRepository = new LotRepository();
-        lotRepository.save(lots);
-    }
-
     public static String park(String carNumber) {
-        LotRepository lotRepository = new LotRepository();
         try {
-            List<Lot> lots = lotRepository.queryAvailableLots();
-            Lot lot = lots.get(0);
-            lot.setCarNumber(carNumber);
-            lotRepository.update(lot);
-            return String.format("%s,%d,%s", lot.getParkingLotTag(), lot.getParkingLotNumber(), lot.getCarNumber());
+            return manager.park(carNumber);
         } catch (ParkingLotFullException e) {
             System.out.println("非常抱歉，由于车位已满，暂时无法为您停车！");
             throw e;
@@ -98,13 +73,8 @@ public class Application {
     }
 
     public static String fetch(String ticket) {
-        LotRepository lotRepository = new LotRepository();
         try {
-            Lot lot = lotRepository.queryByTicket(ticket);
-            String carNumber =lot.getCarNumber();
-            lot.setCarNumber(null);
-            lotRepository.update(lot);
-            return carNumber;
+            return manager.fetch(ticket);
         } catch (InvalidTicketException e) {
             System.out.println("很抱歉，无法通过您提供的停车券为您找到相应的车辆，请您再次核对停车券是否有效！");
             throw e;
