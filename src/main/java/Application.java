@@ -1,5 +1,6 @@
 import dao.LotRepository;
 import entities.Lot;
+import exception.InvalidInitInfoException;
 import exception.InvalidTicketException;
 import exception.ParkingLotFullException;
 
@@ -59,10 +60,14 @@ public class Application {
     }
 
     public static void init(String initInfo) {
-        LotRepository lotRepository = new LotRepository();
-        lotRepository.DeleteAll();
-        Map<String, Integer> tagNumberMap = ParsedInitInfoUtil.parseRawInfo(initInfo);
-        createLots(tagNumberMap);
+        try {
+            Map<String, Integer> tagNumberMap = ParsedInitInfoUtil.parseRawInfo(initInfo);
+            LotRepository lotRepository = new LotRepository();
+            lotRepository.DeleteAll();
+            createLots(tagNumberMap);
+        } catch (InvalidInitInfoException e) {
+            System.out.println("初始化信息格式错误，请重新输入");
+        }
     }
 
     private static void createLots(Map<String, Integer> tagNumberMap) {
