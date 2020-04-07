@@ -1,3 +1,4 @@
+import entities.Manager;
 import exception.InvalidInitInfoException;
 import exception.InvalidTicketException;
 import exception.ParkingLotFullException;

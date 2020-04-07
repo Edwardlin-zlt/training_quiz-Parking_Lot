@@ -1,5 +1,6 @@
+package Utils;
+
 import exception.InvalidInitInfoException;
-import exception.InvalidTicketException;
 
 import java.util.HashMap;
 import java.util.Map;

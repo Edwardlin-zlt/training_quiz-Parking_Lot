@@ -1,5 +1,7 @@
+package entities;
+
+import Utils.ParsedInitInfoUtil;
 import dao.LotRepository;
-import entities.Lot;
 
 import java.util.ArrayList;
 import java.util.List;
