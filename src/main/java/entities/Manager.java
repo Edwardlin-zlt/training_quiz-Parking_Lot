@@ -12,7 +12,6 @@ public class Manager {
 
     public void constructParkingLot(String initInfo) {
         Map<String, Integer> tagNumberMap = ParsedInitInfoUtil.parseRawInfo(initInfo);
-        System.out.println("print this line");
         LotRepository lotRepository = new LotRepository();
         lotRepository.DeleteAll();
         createLots(tagNumberMap);
