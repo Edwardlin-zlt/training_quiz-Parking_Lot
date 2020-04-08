@@ -73,6 +73,5 @@ class ApplicationTest {
     Application.park("B12598");
 
     assertThrows(InvalidTicketException.class, () -> Application.fetch(aTicket));
-
   }
 }

@@ -9,7 +9,7 @@ public class Lot {
     private int id;
     @ColumnName("parking_lot_tag")
     private String parkingLotTag;
-    @ColumnName("parking_log_number")
+    @ColumnName("parking_lot_number")
     private int parkingLotNumber;
     @ColumnName("car_number")
     private String carNumber;

@@ -18,7 +18,7 @@ public class LotRepository {
     public void save(Lot lot) {
         try {
             Connection conn = JDBCUtils.getConnection();
-            String sql = "INSERT INTO lot(parking_lot_tag, parking_log_number, car_number) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO lot(parking_lot_tag, parking_lot_number, car_number) VALUES (?, ?, ?)";
             SqlUtils.executeUpdate(conn, sql, lot.getParkingLotTag(), lot.getParkingLotNumber(), lot.getCarNumber());
         } catch (SQLException e) {
             e.printStackTrace();
@@ -32,7 +32,7 @@ public class LotRepository {
     public void update(Lot lot) {
         try {
             Connection conn = JDBCUtils.getConnection();
-            String sql = "UPDATE lot SET parking_lot_tag=?, parking_log_number=?, car_number=? WHERE id = ?";
+            String sql = "UPDATE lot SET parking_lot_tag=?, parking_lot_number=?, car_number=? WHERE id = ?";
             SqlUtils.executeUpdate(conn, sql, lot.getParkingLotTag(), lot.getParkingLotNumber(), lot.getCarNumber(), lot.getId());
         } catch (SQLException e) {
             e.printStackTrace();
@@ -62,7 +62,7 @@ public class LotRepository {
     public List<Lot> queryAll() {
         try {
             Connection conn = JDBCUtils.getConnection();
-            String sql = "SELECT id, parking_lot_tag, parking_log_number, car_number FROM lot";
+            String sql = "SELECT id, parking_lot_tag, parking_lot_number, car_number FROM lot";
             return SqlUtils.executeQuery(conn, sql, Lot.class);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -73,7 +73,7 @@ public class LotRepository {
     public Lot queryById(int id) {
         try {
             Connection conn = JDBCUtils.getConnection();
-            String sql = "SELECT id, parking_lot_tag, parking_log_number, car_number FROM lot Where id=?";
+            String sql = "SELECT id, parking_lot_tag, parking_lot_number, car_number FROM lot Where id=?";
             return SqlUtils.executeQuerySingle(conn, sql, Lot.class, id);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -84,10 +84,10 @@ public class LotRepository {
     public List<Lot> queryAvailableLots() {
         try {
             Connection conn = JDBCUtils.getConnection();
-            String sql = "SELECT id, parking_lot_tag, parking_log_number, car_number " +
+            String sql = "SELECT id, parking_lot_tag, parking_lot_number, car_number " +
                 "FROM lot " +
                 "WHERE car_number IS NULL " +
-                "ORDER BY parking_lot_tag, parking_log_number";
+                "ORDER BY parking_lot_tag, parking_lot_number";
             List<Lot> lots = SqlUtils.executeQuery(conn, sql, Lot.class);
             if (lots.size() == 0) {
                 throw new ParkingLotFullException();
@@ -103,10 +103,10 @@ public class LotRepository {
         String[] ticketDetails = ticket.split(",");
         try {
             Connection conn = JDBCUtils.getConnection();
-            String sql = "SELECT id, parking_lot_tag, parking_log_number, car_number " +
+            String sql = "SELECT id, parking_lot_tag, parking_lot_number, car_number " +
                 "FROM lot " +
                 "WHERE parking_lot_tag = ? " +
-                "  AND parking_log_number = ? " +
+                "  AND parking_lot_number = ? " +
                 "  AND car_number = ?";
             Lot lot = SqlUtils.executeQuerySingle(conn, sql, Lot.class,
                 ticketDetails[0], ticketDetails[1], ticketDetails[2]);
